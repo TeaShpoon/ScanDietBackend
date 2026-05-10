@@ -4,6 +4,7 @@ from ner.predictor import NERPredictor
 from ner.utils import reverse_ner, get_spans
 from flask import Flask, jsonify, request
 import argparse
+import os
 
 db_provider: DatabaseProvider = OpenFoodFactsProvider()
 
@@ -17,6 +18,7 @@ parser.add_argument(
 parser.add_argument(
     "model_path",
     type=str,
+    nargs="?",
     default="./model.pt",
     help="Path to the model file",
 )
@@ -43,6 +45,9 @@ parser.add_argument(
 )
 
 args = parser.parse_args()
+
+if not os.path.exists(args.model_path):
+    raise FileNotFoundError(f"Model file not found: {args.model_path}")
 
 model = NERPredictor(args.model_path, device=args.device)
 
