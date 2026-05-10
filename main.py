@@ -3,17 +3,48 @@ from db.OpenFoodFacts import OpenFoodFactsProvider
 from ner.predictor import NERPredictor
 from ner.utils import reverse_ner, get_spans
 from flask import Flask, jsonify, request
-from sys import argv
+import argparse
 
 db_provider: DatabaseProvider = OpenFoodFactsProvider()
 
-if len(argv) < 1:
-    model_file = "./model.pt"
-else:
-    model_file = argv[1]
+parser = argparse.ArgumentParser(description="Run a model on a specified device.")
+parser.add_argument(
+    "--device",
+    type=str,
+    default=None,
+    help="Device to run inference on",
+)
+parser.add_argument(
+    "model_path",
+    type=str,
+    default="./model.pt",
+    help="Path to the model file",
+)
 
+parser.add_argument(
+    "--port",
+    type=int,
+    default=3000,
+    help="Port number to listen on (default: 3000)",
+)
 
-model = NERPredictor(model_file)
+parser.add_argument(
+    "--debug",
+    action="store_true",
+    default=False,
+    help="Enable debug mode (default: False)",
+)
+
+parser.add_argument(
+    "--host",
+    type=str,
+    default="localhost",
+    help="Host address to bind to (default: localhost)",
+)
+
+args = parser.parse_args()
+
+model = NERPredictor(args.model_path, device=args.device)
 
 app = Flask(__name__)
 
@@ -38,4 +69,4 @@ def handle_ingredients():
     return jsonify(response)
 
 
-app.run(host="0.0.0.0", port=3000, debug=True)
+app.run(host=args.host, port=args.port, debug=args.debug)

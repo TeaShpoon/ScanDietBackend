@@ -33,7 +33,7 @@ class BiLSTMCRF(nn.Module):
             num_layers=1,
             bidirectional=True,
             batch_first=True,
-            dropout=dropout,
+            dropout=0,
         )
         self.dropout = nn.Dropout(dropout)
         self.hidden2tag = nn.Linear(hidden_dim, tagset_size)
