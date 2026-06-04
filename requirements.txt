@@ -3,4 +3,4 @@ nltk==3.9.4
 numpy==2.4.6
 requests==2.33.1
 torch==2.12.0
-TorchCRF==1.1.0
+pytorch-crf==0.7.2

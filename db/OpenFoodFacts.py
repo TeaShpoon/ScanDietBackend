@@ -1,5 +1,6 @@
 import requests
 from db.provider import DatabaseProvider
+import html
 
 
 class OpenFoodFactsProvider(DatabaseProvider):
@@ -20,11 +21,21 @@ class OpenFoodFactsProvider(DatabaseProvider):
             raise ValueError(f"Product with barcode {barcode} not found.")
 
         product = data["product"]
-        name = (
-            product.get("product_name_ru") or product.get("product_name") or "Unknown"
+        ingredients = full_unescape(product.get("ingredients_text", ""))
+
+        name = full_unescape(
+            (product.get("product_name_ru") or product.get("product_name") or "Unknown")
         )
 
         return {
             "product_name": name,
-            "ingredients_text": product.get("ingredients_text", ""),
+            "ingredients_text": ingredients,
         }
+
+
+def full_unescape(s):
+    prev = None
+    while prev != s:
+        prev = s
+        s = html.unescape(s)
+    return s
