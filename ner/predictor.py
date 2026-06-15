@@ -5,7 +5,7 @@ from typing import List, Tuple
 import nltk
 
 nltk.download("punkt", quiet=True)
-from nltk.tokenize import word_tokenize
+from nltk.tokenize import word_tokenize  # noqa: E402
 
 
 class BiLSTMCRF(nn.Module):
